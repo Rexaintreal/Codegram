@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Codegram</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805"
+     crossorigin="anonymous"></script>
+  <style>
+    .preview-image {
+      max-width: 200px;
+      max-height: 200px;
+    }
+    .invert-icon {
+      filter: invert(100%);
+    }
+    .file-input {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      vertical-align: middle;
+      width: 120px;
+      height: 40px;
+    }
+    .file-input input[type="file"] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      opacity: 0;
+      font-size: 100px;
+      width: 100px;
+      height: 36px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar">
+        <form action="{{ url_for('search') }}" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query" class="bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search" class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+            <li><a href="/homepage"><img src="{{ url_for('static', filename='images/home.svg') }}"
+                        alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+            <li><a href="/community"><img src="{{ url_for('static', filename='images/community.svg') }}"
+                        alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+            <li><a href="/globalchat"><img src="{{ url_for('static', filename='images/chat.svg') }}"
+                        alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+            <li><a href="/profile"><img src="{{ url_for('static', filename='images/profile.svg') }}"
+                        alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+            <li><a href="/settings"><img src="{{ url_for('static', filename='images/settings.svg') }}"
+                        alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+            <li><a href="/create_post"><img src="{{ url_for('static', filename='images/create.svg') }}"
+                        alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+            <li><a href="/opinions"><img src="{{ url_for('static', filename='images/opinions.svg') }}"
+                        alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+            <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+    </nav>
+    </header>
+    <h1 class="text-3xl font-bold text-white mb-8">Settings</h1>
+
+    <div class="flex mb-8">
+      <div class="w-1/2 pr-8">
+        <h2 class="text-xl text-white font-bold mb-2">Profile Picture</h2>
+        <p class="text-white mb-4">Follow these steps to change your profile picture:</p>
+        <ol class="list-decimal list-inside text-white mb-4">
+          <li>Delete the current picture using the "Delete Picture" button.</li>
+          <li>Choose a new picture using the "Choose a file" button.</li>
+          <li>Upload the new picture using the "Upload Picture" button.</li>
+        </ol>
+        <div class="flex items-center mb-4">
+          <form action="/delete_profile_picture" method="POST">
+            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-4">Delete Picture</button>
+          </form>
+          <form action="/upload_profile_picture" method="POST" enctype="multipart/form-data">
+            <label for="profile_picture" class="file-input bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">Choose</label>
+            <input type="file" id="profile_picture" name="profile_picture" accept="image/jpeg, image/png" class="hidden">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4">Upload Picture</button>
+          </form>
+        </div>
+        <div class="mt-4">
+          <img src="{{ url_for('static', filename='uploads/' + username + '.jpg') }}" alt="Profile Picture" class="preview-image">
+        </div>
+      </div>
+      <div class="w-1/2 pl-8">
+        <div class="mb-8">
+          <h2 class="text-xl text-white font-bold mb-2">Bio</h2>
+            <div class="w-1/2">
+              <p class="text-white">{{ bio }}</p>
+              <form action="/update_bio" method="POST">
+                <textarea name="bio" class="bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2 resize-none" rows="8" cols="50" placeholder="Enter your new bio..."></textarea>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">Save Bio</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+    <div class="mb-8">
+      <h2 class="text-xl text-white font-bold mb-2">Interests</h2>
+      <p class="text-white">Interests are not editable in this version.</p>
+    </div>
+
+  </div>
+</body>
+</html>

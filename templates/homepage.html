@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codegram - Home</title>
+  <!-- Include Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Include CodeMirror CSS and JS -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/python/python.min.js"></script>
+  <style>
+    .post {
+      background-color: #2d3748;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .invert-icon {
+      filter: invert(100%);
+    }
+
+    .code-editor {
+      min-height: 50px; /* Set a minimum height */
+      height: auto;
+      overflow-y: hidden;
+    }
+
+    .expand-button {
+      display: none;
+    }
+
+    .expanded {
+      overflow-y: auto;
+      max-height: none !important;
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar flex justify-center">
+        <form action="/search" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="/static/images/search.svg" alt="Search" class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+          <li><a href="/homepage"><img src="/static/images/home.svg" alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+          <li><a href="/community"><img src="/static/images/community.svg" alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+          <li><a href="/globalchat"><img src="/static/images/chat.svg" alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+          <li><a href="/profile"><img src="/static/images/profile.svg" alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+          <li><a href="/settings"><img src="/static/images/settings.svg" alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+          <li><a href="/create_post"><img src="/static/images/create.svg" alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+          <li><a href="/opinions"><img src="/static/images/opinions.svg" alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+          <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="main">
+      <div id="post-container" class="posts">
+        {% for post in posts|sort(reverse=True, attribute='id') %}
+          <div class="post bg-gray-800 p-6 mb-6 rounded-lg" data-id="{{ post.id }}">
+            <div class="flex items-center">
+              {% if post.username in profile_pictures %}
+                <img src="{{ profile_pictures[post.username] }}" alt="Profile Picture" class="w-6 h-6 rounded-full mr-2">
+              {% else %}
+                <img src="/static/uploads/default.jpg" alt="Default Profile Picture" class="w-6 h-6 rounded-full mr-2">
+              {% endif %}
+              <a href="/profile/{{ post.username }}" class="username text-white">{{ post.username }}</a>
+            </div>
+            <div class="post-content mb-4">
+              <div class="code-editor-container">
+                <div class="code-editor">
+                  <textarea class="code-editor-textarea bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>{{ post.content }}</textarea>
+                </div>
+                {% if post.content|length > 200 %}
+                <div class="expanded hidden">
+                    <textarea class="expanded-textarea bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>{{ post.content }}</textarea>
+                </div>
+                <button class="expand-button" onclick="expandCodeEditor(this)">View More</button>
+                {% endif %}
+              </div>
+              <span class="text-white">Language used: {{ post.language }}</span>
+              {% if post.caption %}
+                <p class="text-white">Caption: {{ post.caption }}</p>
+              {% endif %}
+              {% if post.file_name %}
+                <a href="{{ url_for('download_file', filename=post.file_name) }}" class="file-link text-blue-500 hover:underline">
+                  <img src="/static/images/paperclip.svg" alt="Download" class="w-4 h-4 inline-block align-middle mr-1 invert-icon">
+                  Download Attachment
+                </a>
+              {% endif %}
+            </div>
+            <div class="post-features flex items-center space-x-4">
+              <form action="/like_post" method="POST">
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <div class="flex items-center">
+                  <button type="submit" class="like-icon focus:outline-none">
+                    <img src="/static/images/like.svg" alt="Like" class="w-6 h-6 invert-icon">
+                  </button>
+                  <span class="like-count text-gray-300">{{ post.like_count }}</span>
+                </div>
+              </form>
+              <form action="/dislike_post" method="POST">
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <div class="flex items-center">
+                  <button type="submit" class="dislike-icon small focus:outline-none">
+                    <img src="/static/images/dislike.svg" alt="Dislike" class="w-6 h-6 invert-icon">
+                  </button>
+                  <span class="dislike-count text-gray-300">{{ post.dislike_count }}</span>
+                </div>
+              </form>
+              <div class="flex items-center">
+                <a href="/comment_post/{{ post.id }}" class="comment-icon">
+                  <button type="submit" class="dislike-icon small focus:outline-none">
+                    <img src="/static/images/comment.svg" alt="Comment" class="w-6 h-6 invert-icon">
+                  </button>
+                </a>
+              </div>
+              <div class="sharethis-inline-share-buttons"></div>
+            </div>
+          </div>
+        {% endfor %}
+        {% if posts|length == 0 %}
+          <p class="no-posts text-gray-300">No posts found.</p>
+        {% endif %}
+      </div>
+    </div>
+    <footer class="py-4">
+      <p class="text-gray-300">&copy; 2023 Codegram</p>
+    </footer>
+  </div>
+  <!-- Include your JavaScript file -->
+  <script>
+    // Initialize CodeMirror on all textareas with class "code-editor-textarea"
+    var codeEditorTextareas = document.querySelectorAll(".code-editor-textarea");
+    codeEditorTextareas.forEach(function(textarea) {
+      CodeMirror.fromTextArea(textarea, {
+        mode: 'python',
+        readOnly: true,
+        theme: 'monokai',
+        lineNumbers: true,
+        viewportMargin: Infinity // Set viewportMargin to auto
+      });
+    });
+  
+    function expandCodeEditor(button) {
+      var container = button.parentNode;
+      var codeEditor = container.querySelector('.code-editor-container');
+      var hiddenTextarea = container.querySelector('.expanded-textarea');
+      codeEditor.classList.add('expanded');
+      hiddenTextarea.classList.remove('hidden');
+      button.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

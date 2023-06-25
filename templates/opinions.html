@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+  .invert-icon {
+    filter: invert(100%);
+  }
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codegram - Opinions</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805"
+     crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar">
+        <form action="{{ url_for('search') }}" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query"
+            class="bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search"
+              class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+            <li><a href="/homepage"><img src="{{ url_for('static', filename='images/home.svg') }}"
+                        alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+            <li><a href="/community"><img src="{{ url_for('static', filename='images/community.svg') }}"
+                        alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+            <li><a href="/globalchat"><img src="{{ url_for('static', filename='images/chat.svg') }}"
+                        alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+            <li><a href="/profile"><img src="{{ url_for('static', filename='images/profile.svg') }}"
+                        alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+            <li><a href="/settings"><img src="{{ url_for('static', filename='images/settings.svg') }}"
+                        alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+            <li><a href="/create_post"><img src="{{ url_for('static', filename='images/create.svg') }}"
+                        alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+            <li><a href="/opinions"><img src="{{ url_for('static', filename='images/opinions.svg') }}"
+                        alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+            <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+    </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto py-8">
+
+      <h2 class="text-white text-3xl mb-6">Opinions</h2>
+       <!-- Add your own opinion -->
+       <div class="bg-white p-4 rounded shadow">
+        <form class="flex items-center space-x-2" action="{{ url_for('submit_opinion') }}" method="POST">
+          <textarea name="opinion" class="w-full rounded border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+            rows="2" placeholder="Add your opinion"></textarea>
+          <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded">Submit</button>
+        </form>
+      </div>
+      <!-- Opinion Cards -->
+      <div class="grid grid-cols-1 gap-4">
+        <!-- Opinion Cards dynamically generated from server data -->
+        {% set sorted_opinions = opinions|sort(attribute='2', reverse=True) %}
+        {% for opinion in sorted_opinions %}
+        <div class="bg-gray-800 p-4 rounded shadow">
+          <div class="flex items-center mb-2">
+            <span class="text-white">{{ opinion[2] }} upvotes</span> <!-- Upvotes count -->
+            <div class="ml-auto">
+              <form action="{{ url_for('upvote', opinion_id=opinion[0]) }}" method="POST" class="inline">
+                <button name="vote" class="text-green-500 focus:outline-none" {% if opinion[3] %}disabled{% endif %}>
+                  <img src="{{ url_for('static', filename='images/upvote.svg') }}" alt="Upvote" class="w-5 h-5 invert-icon">
+                </button>
+              </form>
+            </div>
+          </div>
+          <p class="text-white">{{ opinion[1] }}</p> <!-- Opinion text -->
+        </div>
+        {% endfor %}
+
+      </div>
+
+
+    </main>
+  </div>
+</body>
+
+</html>

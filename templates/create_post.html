@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codegram - Create Post</title>
+  <style>
+    .invert-icon {
+      filter: invert(100%);
+    }
+    #code-editor {
+      height: 400px;
+    }
+  </style>
+  <!-- Include Tailwind CSS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs/loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs/editor/editor.main.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar flex justify-center">
+        <form action="/search" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="/static/images/search.svg" alt="Search" class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+          <li><a href="/homepage"><img src="/static/images/home.svg" alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+          <li><a href="/community"><img src="/static/images/community.svg" alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+          <li><a href="/globalchat"><img src="/static/images/chat.svg" alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+          <li><a href="/profile"><img src="/static/images/profile.svg" alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+          <li><a href="/settings"><img src="/static/images/settings.svg" alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+          <li><a href="/create_post"><img src="/static/images/create.svg" alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+          <li><a href="/opinions"><img src="/static/images/opinions.svg" alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+          <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container mx-auto">
+      <main>
+        <h1 class="text-2xl text-white font-bold mb-4">Create Post</h1>
+
+        <form id="post-form" action="/create_post" method="POST" enctype="multipart/form-data">
+          <div class="flex flex-col mb-4">
+            <label for="caption" class="text-white text-lg mb-2">Caption</label>
+            <input type="text" name="caption" id="caption" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter a caption">
+          </div>
+          <div class="flex flex-col mb-4">
+            <label for="language" class="text-white text-lg mb-2">Select Language</label>
+            <select name="language" id="language" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="javascript">JavaScript</option>
+              <option value="typescript">TypeScript</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="csharp">C#</option>
+              <option value="cpp">C++</option>
+              <option value="php">PHP</option>
+              <option value="ruby">Ruby</option>
+              <option value="go">Go</option>
+              <option value="swift">Swift</option>
+              <option value="rust">Rust</option>
+              <option value="kotlin">Kotlin</option>
+              <option value="dart">Dart</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="scss">SCSS</option>
+              <option value="less">LESS</option>
+              <option value="json">JSON</option>
+              <option value="xml">XML</option>
+              <option value="yaml">YAML</option>
+              <option value="markdown">Markdown</option>
+              <!-- Add more options for other languages -->
+            </select>
+          </div>
+          <div class="flex flex-col mb-4">
+            <label for="code-editor" class="text-white text-lg mb-2">Enter your code here</label>
+            <div id="code-editor" class="bg-gray-800"></div>
+            <input type="hidden" name="content" id="code-editor-content">
+          </div>
+          <div class="relative flex items-center justify-center w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg bg-gray-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="file" id="file" name="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+            <span class="mr-2">Upload File</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 4a1 1 0 0 0-1 1v4H6a1 1 0 1 0 0 2h3v4a1 1 0 1 0 2 0v-4h3a1 1 0 1 0 0-2h-3V5a1 1 0 0 0-1-1z"/>
+            </svg>
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg" id="upload-btn" disabled>Create Post</button>
+        </form>
+      </main>
+
+    </div>
+  </div>
+  <script>
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.27.0/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+      var codeEditor = monaco.editor.create(document.getElementById('code-editor'), {
+        value: '',
+        language: 'javascript',
+        automaticLayout: true,
+        theme: 'vs-dark'
+      });
+      // Enable Create Post button if the code editor has content
+      codeEditor.onDidChangeModelContent(function() {
+        var content = codeEditor.getValue();
+        var uploadBtn = document.getElementById('upload-btn');
+        var codeEditorContent = document.getElementById('code-editor-content');
+        if (content.trim().length > 0) {
+          uploadBtn.disabled = false;
+          codeEditorContent.value = content;
+        } else {
+          uploadBtn.disabled = true;
+          codeEditorContent.value = '';
+        }
+      });
+
+      // Change language of code editor based on user selection
+      document.getElementById('language').addEventListener('change', function() {
+        var selectedLanguage = this.value;
+        monaco.editor.setModelLanguage(codeEditor.getModel(), selectedLanguage);
+      });
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+</body>
+</html>

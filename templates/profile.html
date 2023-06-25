@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codegram - Profile</title>
+  <style>
+    .invert-icon {
+      filter: invert(100%);
+    }
+
+    .CodeMirror {
+      height: 150px; /* Adjust the height as desired */
+      border-radius: 4px;
+      background-color: #2d3748;
+      color: #fff;
+      padding: 10px;
+    }
+  </style>
+  <!-- Include Tailwind CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/monokai.min.css">
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805"
+     crossorigin="anonymous"></script>
+  <!-- Include CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+</head>
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar">
+        <form action="{{ url_for('search') }}" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query" class="bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search" class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+            <li><a href="/homepage"><img src="{{ url_for('static', filename='images/home.svg') }}"
+                        alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+            <li><a href="/community"><img src="{{ url_for('static', filename='images/community.svg') }}"
+                        alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+            <li><a href="/globalchat"><img src="{{ url_for('static', filename='images/chat.svg') }}"
+                        alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+            <li><a href="/profile"><img src="{{ url_for('static', filename='images/profile.svg') }}"
+                        alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+            <li><a href="/settings"><img src="{{ url_for('static', filename='images/settings.svg') }}"
+                        alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+            <li><a href="/create_post"><img src="{{ url_for('static', filename='images/create.svg') }}"
+                        alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+            <li><a href="/opinions"><img src="{{ url_for('static', filename='images/opinions.svg') }}"
+                        alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+            <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+    </nav>
+    </header>
+    <main>
+      <div class="container mx-auto">
+        <!-- Profile section -->
+        <div class="profile-section flex items-center mt-8">
+          <div class="profile-picture-container">
+            <img src="{{ profile_picture }}" alt="Profile Picture" class="w-32 h-auto rounded-full">
+          </div>
+          <div class="profile-info ml-8">
+            <h2 class="text-3xl font-bold text-white">{{ username }}</h2>
+            <p class="text-lg text-white">{{ bio }}</p>
+            <h3 class="text-xl font-bold mt-4 text-white">Interests</h3>
+            <ul class="interests">
+              {% for interest in interests %}
+                <li class="text-x1 text-white">{{ interest }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts section -->
+      <div class="posts-section mt-8">
+        <h2 class="text-2xl font-bold text-white">Posts</h2>
+        {% for post in posts %}
+          <div class="post bg-gray-800 p-6 mb-6 rounded-lg">
+            <textarea id="code-editor-{{ post.id }}" class="code-editor">{{ post.content }}</textarea>
+            <p class="likes text-gray-300">Likes: {{ post.likes }}</p>
+            <form class="delete-form" action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+              <button id="delete-button" class="bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded-lg">Delete</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    </main>
+    <footer class="py-4">
+      <p class="text-gray-300">&copy; 2023 Codegram. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Include CodeMirror JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+  <!-- Include CodeMirror mode for desired programming language (e.g., JavaScript) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/javascript/javascript.min.js"></script>
+
+  <script>
+    // Initialize CodeMirror for each code editor
+    {% for post in posts %}
+      var editor{{ post.id }} = CodeMirror.fromTextArea(document.getElementById("code-editor-{{ post.id }}"), {
+        lineNumbers: true,
+        readOnly: true,
+        theme: 'monokai',
+        lineNumbers: true,
+      });
+    {% endfor %}
+  </script>
+</body>
+</html>

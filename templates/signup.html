@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://kit.fontawesome.com/fc1e235b2e.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805"
+     crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='output.css') }}">
+  <style>
+    body {
+      background-image: url('static/images/signup.jpg'); /* Set the background image */
+      background-size: cover; /* Resize the image to cover the entire body */
+      background-repeat: no-repeat; /* Prevent the image from repeating */
+      background-position: center center; /* Center the image within the body */
+    }
+  </style>
+  <title>Codegram - Signup</title>
+</head>
+
+<body class="bg-gray-900">
+  <div class="flex justify-center items-center h-screen">
+    <div class="max-w-md mx-auto p-6 border border-gray-800 rounded-lg bg-white dark:bg-gray-800 shadow-md">
+      <div class="text-center">
+        <h1 class="text-3xl font-bold mb-6 text-gray-900">Codegram</h1>
+      </div>
+      <form action="{{ url_for('signup') }}" method="post">
+        <input class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" type="email" placeholder="Email" name="email" required>
+        <input class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" placeholder="Username" name="username" required>
+        <input class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="Password" name="password" required>
+        <button class="w-full py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors duration-300 ease-in-out" type="submit">Sign up</button>
+      </form>      
+      <div class="text-red-500">{{ error }}</div>
+    </div>
+  </div>
+</body>
+
+</html>

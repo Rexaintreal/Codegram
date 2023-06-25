@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Codegram - Chat</title>
+  <!-- Include Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805" crossorigin="anonymous"></script>
+  <style>
+    
+    #chat-history {
+      max-height: 440px; /* Adjust the height as per your requirement */
+      overflow-y: auto; /* Add a scrollbar when content overflows */
+      background-image: url('static/images/chatbackground.jpg'); /* Set the background image */
+      background-size: cover; /* Resize the image to cover the entire chat area */
+      background-repeat: no-repeat; /* Prevent the image from repeating */
+      background-position: center center; /* Center the image within the chat area */
+      border-radius: 10px; /* Add rounded corners to the chat area */
+      padding: 10px; /* Add some padding to the chat area */
+    }
+  
+    .message-container {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+  
+    .message-content {
+      margin: 0;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  
+    .sent-message {
+      align-self: flex-end;
+      background-color: #4a5568;
+      color: white;
+      text-align: right;
+      margin-left: auto;
+    }
+  
+    .received-message {
+      align-self: flex-start;
+      background-color: #1a202c;
+      color: white;
+      text-align: left;
+      margin-right: auto;
+    }
+  
+    .message-content.sent-message {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  
+    .message-content.sent-message .profile-picture {
+      margin-bottom: 5px;
+    }
+  
+    .message-content.sent-message .username {
+      margin-bottom: 5px;
+    }
+  
+    .message-content.received-message {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .message-content.received-message .profile-picture {
+      margin-bottom: 5px;
+    }
+  
+    .message-content.received-message .username {
+      margin-bottom: 5px;
+    }
+  
+    .profile-picture {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+  
+    .username {
+      font-size: 12px;
+      font-weight: bold;
+    }
+  
+    .invert-icon {
+      filter: invert(100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
+  <div class="container mx-auto">
+    <header class="flex justify-between items-center py-4">
+      <div class="logo">
+        <h1 class="text-white text-2xl font-bold">Codegram</h1>
+      </div>
+      <div class="search-bar flex justify-center">
+        <form action="/search" method="GET" class="flex items-center">
+          <input type="text" placeholder="Search" name="query" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button type="submit" class="ml-2">
+            <img src="/static/images/search.svg" alt="Search" class="w-6 h-6 invert-icon">
+          </button>
+        </form>
+      </div>
+      <nav>
+        <ul class="flex items-center space-x-4">
+          <li><a href="/homepage"><img src="/static/images/home.svg" alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+          <li><a href="/community"><img src="/static/images/community.svg" alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+          <li><a href="/globalchat"><img src="/static/images/chat.svg" alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+          <li><a href="/profile"><img src="/static/images/profile.svg" alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+          <li><a href="/settings"><img src="/static/images/settings.svg" alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+          <li><a href="/create_post"><img src="/static/images/create.svg" alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+          <li><a href="/opinions"><img src="/static/images/opinions.svg" alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+          <li><a href="/logout" class="text-white">Log out</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="section">
+      <div class="container">
+        <h1 class="text-1x font-bold mb-4 text-white">Public Chat</h1>
+
+        <div id="chat-history" class="post bg-gray-800 p-6 mb-6 rounded-lg text-gray-200">
+          <!-- Chat messages will be appended here dynamically -->
+        </div>
+
+        <div class="mt-4">
+          <div class="flex items-center">
+            <input id="username-input" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="text" placeholder="Username" value="{{ username }}" readonly>
+            <input id="message-input" class="bg-white text-black py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ml-4" type="text" placeholder="Message" spellcheck="true">
+            <button id="send-button" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg ml-4">Send</button>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  // Function to retrieve chat messages from the server
+  function getChatHistory() {
+    $.ajax({
+      url: '/get_chat_history',
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        // Clear the chat history
+        $('#chat-history').empty();
+
+        // Append each message to the chat history
+        data.messages.forEach(function(message) {
+          var profilePictureUrl = '/static/uploads/' + message.username + '.jpg';
+          var defaultProfilePictureUrl = '/static/uploads/default.jpg';
+
+          var profilePictureElement = $('<img>').attr('src', profilePictureUrl).addClass('profile-picture').on('error', function() {
+            $(this).attr('src', defaultProfilePictureUrl);
+          });
+
+          var usernameElement = $('<strong>').text(message.username);
+          var messageElement = $('<p>').text(message.content);
+
+          var messageContainer = $('<div>').addClass('message-container');
+          var messageContent = $('<div>').addClass('message-content');
+
+          // Set the appropriate CSS class based on the sender of the message
+          if (message.username === "{{ username }}") {
+            messageContent.addClass('sent-message');
+            messageContainer.append(messageContent, profilePictureElement);
+          } else {
+            messageContent.addClass('received-message');
+            messageContainer.append(profilePictureElement, messageContent);
+          }
+
+          messageContent.append(usernameElement, messageElement);
+
+          // Append the message container to the chat history
+          $('#chat-history').append(messageContainer);
+        });
+
+        // Scroll to the bottom of the chat history
+        var chatHistory = document.getElementById('chat-history');
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      },
+      error: function(xhr, status, error) {
+        console.log('Error:', error);
+      }
+    });
+  }
+
+    // Function to send a chat message to the server
+    function sendChatMessage(username, content) {
+      $.ajax({
+        url: '/send_chat_message',
+        method: 'POST',
+        data: JSON.stringify({ username: username, content: content }),
+        contentType: 'application/json',
+        success: function (data) {
+          // Clear the message input field
+          $('#message-input').val('');
+
+          // Retrieve the updated chat history
+          getChatHistory();
+        },
+        error: function (xhr, status, error) {
+          console.log('Error:', error);
+        }
+      });
+    }
+
+    // Event listener for the send button click
+    $('#send-button').click(function () {
+      var username = $('#username-input').val();
+      var content = $('#message-input').val();
+
+      if (username && content) {
+        sendChatMessage(username, content);
+      }
+    });
+
+    // Event listener for the enter key press in the message input field
+    $('#message-input').keypress(function (e) {
+      if (e.which == 13) {
+        var username = $('#username-input').val();
+        var content = $('#message-input').val();
+
+        if (username && content) {
+          sendChatMessage(username, content);
+        }
+      }
+    });
+
+    // Retrieve the initial chat history
+    getChatHistory();
+
+    // Periodically retrieve the updated chat history
+    setInterval(getChatHistory, 3000);
+  </script>
+
+  </div>
+</body>
+</html>

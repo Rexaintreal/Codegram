@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codegram - Community</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3660569121782805"
+     crossorigin="anonymous"></script>
+    <style>
+        .invert-icon {
+            filter: invert(100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900">
+    <div class="container mx-auto">
+        <header class="flex justify-between items-center py-4">
+            <div class="logo">
+                <h1 class="text-white text-2xl font-bold">Codegram</h1>
+            </div>
+            <div class="search-bar">
+                <form action="{{ url_for('search') }}" method="GET" class="flex items-center">
+                    <input type="text" placeholder="Search" name="query"
+                        class="bg-gray-800 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="ml-2">
+                        <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search"
+                            class="w-6 h-6 invert-icon">
+                    </button>
+                </form>
+            </div>
+            <nav>
+                <ul class="flex items-center space-x-4">
+                    <li><a href="/homepage"><img src="{{ url_for('static', filename='images/home.svg') }}"
+                                alt="Homepage" class="w-6 h-6 invert-icon" title="Homepage"></a></li>
+                    <li><a href="/community"><img src="{{ url_for('static', filename='images/community.svg') }}"
+                                alt="Community" class="w-6 h-6 invert-icon" title="Community"></a></li>
+                    <li><a href="/globalchat"><img src="{{ url_for('static', filename='images/chat.svg') }}"
+                                alt="Global Chat" class="w-6 h-6 invert-icon" title="Global Chat"></a></li>
+                    <li><a href="/profile"><img src="{{ url_for('static', filename='images/profile.svg') }}"
+                                alt="Profile" class="w-6 h-6 invert-icon" title="My Profile"></a></li>
+                    <li><a href="/settings"><img src="{{ url_for('static', filename='images/settings.svg') }}"
+                                alt="Settings" class="w-6 h-6 invert-icon" title="Settings"></a></li>
+                    <li><a href="/create_post"><img src="{{ url_for('static', filename='images/create.svg') }}"
+                                alt="Create Post" class="w-6 h-6 invert-icon" title="Create Post"></a></li>
+                    <li><a href="/opinions"><img src="{{ url_for('static', filename='images/opinions.svg') }}"
+                                alt="Opinions" class="w-6 h-6 invert-icon" title="Opinions"></a></li>
+                    <li><a href="/logout" class="text-white">Log out</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="container mx-auto">
+                <div class="py-4">
+                    <h2 class="text-4xl font-bold text-white mb-4">Codegram Community</h2>
+                </div>
+                <div class="flex space-x-4 mb-4">
+                    <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg tab-button"
+                        data-tab="python">Python</button>
+                    <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg tab-button"
+                        data-tab="java">Java</button>
+                    <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg tab-button"
+                        data-tab="cpp">C++</button>
+                </div>
+                <!-- Python Section -->
+                <section id="python" style="display: none;">
+                    <h2 class="text-2xl font-bold text-white mb-4">Python</h2>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Latest Python News</h2>
+                        <div class="grid grid-cols-1 gap-4">
+                            {% for article in python_news %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ article.title }}</h3>
+                                <p class="text-gray-300">{{ article.description }}</p>
+                                <a href="{{ article.url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">Read more</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Popular Python Repositories</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for repository in python_repositories %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ repository.name }}</h3>
+                                <p class="text-gray-300">{{ repository.description }}</p>
+                                <div class="flex items-center mt-4">
+                                    <img src="{{ repository.owner.avatar_url }}" alt="Owner Avatar"
+                                        class="w-6 h-6 rounded-full mr-2">
+                                    <p class="text-gray-300">{{ repository.owner.login }}</p>
+                                </div>
+                                <a href="{{ repository.html_url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">View on GitHub</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- C++ Section -->
+                <section id="cpp" style="display: none;">
+                    <h2 class="text-2xl font-bold text-white mb-4">C++</h2>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Latest C++ News</h2>
+                        <div class="grid grid-cols-1 gap-4">
+                            {% for article in cpp_news %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ article.title }}</h3>
+                                <p class="text-gray-300">{{ article.description }}</p>
+                                <a href="{{ article.url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">Read more</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Popular C++ Repositories</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for repository in cpp_repositories %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ repository.name }}</h3>
+                                <p class="text-gray-300">{{ repository.description }}</p>
+                                <div class="flex items-center mt-4">
+                                    <img src="{{ repository.owner.avatar_url }}" alt="Owner Avatar"
+                                        class="w-6 h-6 rounded-full mr-2">
+                                    <p class="text-gray-300">{{ repository.owner.login }}</p>
+                                </div>
+                                <a href="{{ repository.html_url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">View on GitHub</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Java Section -->
+                <section id="java" style="display: none;">
+                    <h2 class="text-2xl font-bold text-white mb-4">Java</h2>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Latest Java News</h2>
+                        <div class="grid grid-cols-1 gap-4">
+                            {% for article in java_news %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ article.title }}</h3>
+                                <p class="text-gray-300">{{ article.description }}</p>
+                                <a href="{{ article.url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">Read more</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="py-8">
+                        <h2 class="text-2xl font-bold text-white mb-4">Popular Java Repositories</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {% for repository in java_repositories %}
+                            {% if loop.index <= 12 %} <!-- Limit to 5 news articles -->
+                            <div class="bg-gray-800 p-6 rounded-lg">
+                                <h3 class="text-lg font-bold text-white mb-2">{{ repository.name }}</h3>
+                                <p class="text-gray-300">{{ repository.description }}</p>
+                                <div class="flex items-center mt-4">
+                                    <img src="{{ repository.owner.avatar_url }}" alt="Owner Avatar"
+                                        class="w-6 h-6 rounded-full mr-2">
+                                    <p class="text-gray-300">{{ repository.owner.login }}</p>
+                                </div>
+                                <a href="{{ repository.html_url }}" target="_blank"
+                                    class="text-blue-500 hover:underline mt-2">View on GitHub</a>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <footer class="flex justify-center items-center py-4">
+            <p class="text-gray-300">© 2023 Codegram. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.dataset.tab;
+                showTab(tab);
+            });
+        });
+
+        function showTab(tab) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            const selectedSection = document.getElementById(tab);
+            selectedSection.style.display = 'block';
+        }
+
+        showTab('python');
+    </script>
+</body>
+
+</html>
