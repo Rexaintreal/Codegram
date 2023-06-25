@@ -14,7 +14,7 @@ CodeGram is a social media platform designed specifically for developers and pro
  </p>
 
 <p align="center">
-  <img src="https://github.com/Rexaintreal/Codegram/blob/main/static/images/Screenshot%20(81).png" alt="Homepage">
+  <img src="https://github.com/Rexaintreal/Codegram/blob/main/static/images/Screenshot%20(92).png" alt="Homepage">
 </p>
 
 
