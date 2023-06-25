@@ -69,18 +69,6 @@ To run Codegram locally, follow these steps:
 Please note that this application is currently under development, and future updates will bring additional features and improvements. We appreciate your feedback and suggestions for making Codegram even better.
 
 
-## ***Updates***
-
-- Codegram was first released on 22 May 2023
-- Codegram was updated on 25 May 2023
-  - Added a Global Chat 
-  - Users can now like/dislike and comment 
-  - Users can now share files
-  - Users can now visit other user's profile
-- Codegram was updated on 26 May 2023
-  - Now Codegram uses Tailwind CSS instead of Bulma or Normal CSS3
-  - New Design, Icons, UI and UX
-
 
 
 ## Contact
